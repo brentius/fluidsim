@@ -86,10 +86,10 @@ public class Solver
 
                     double d = (-div / sTot) * relaxation;
 
-                    g.u[i, j]      -= d * g.s[i - 1, j];
-                    g.u[i + 1, j]  += d * g.s[i + 1, j];
-                    g.v[i, j]      -= d * g.s[i, j - 1];
-                    g.v[i, j + 1]  += d * g.s[i, j + 1];
+                    g.u[i, j] -= d * g.s[i - 1, j];
+                    g.u[i + 1, j] += d * g.s[i + 1, j];
+                    g.v[i, j] -= d * g.s[i, j - 1];
+                    g.v[i, j + 1] += d * g.s[i, j + 1];
                     
                     g.p[i,j] += d; 
                 }
