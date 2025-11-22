@@ -49,7 +49,7 @@ public class Solver
     public void Simulate(Grid grid, double dt, double gravity)
     {
         Integrate(grid, dt, gravity);
-        //reset pressure every frame
+        //reset pressure
         Array.Clear(grid.p, grid.p.length);
         Solve(grid);
 
@@ -70,4 +70,30 @@ public class Solver
         }
     }
 
+    private void Solve(Grid g)
+    {
+        for (int iter=0; iter < iterations; iter++)
+        {
+            for (int i = 1; i<g.Nx -1; i++)
+            {
+                for (int j=1; j<g.Ny-1; j++)
+                {
+                    if (g.s[i, j] == 0.0) continue;
+                    double div = g.u[i+1, j] - g.u[i, j] + g.v[i, j+1] - g.v[i, j];
+                    double sTot = g.s[i + 1, j] + g.s[i - 1, j] + g.s[i, j + 1] + g.s[i, j - 1];
+
+                    if (sTot == 0.0) continue;
+
+                    double d = (-div / sTot) * relaxation;
+
+                    g.u[i, j]      -= d * g.s[i - 1, j];
+                    g.u[i + 1, j]  += d * g.s[i + 1, j];
+                    g.v[i, j]      -= d * g.s[i, j - 1];
+                    g.v[i, j + 1]  += d * g.s[i, j + 1];
+                    
+                    g.p[i,j] += d; 
+                }
+            }
+        }
+    }
 }
