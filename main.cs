@@ -78,7 +78,29 @@ public class FluidSim
                     float div = u[right] - u[left] + v[down] - v[up];
 
                     //correct div if neighbors are walls
-                    if s[right] = 
+                    if (s[right] == 0.0f) div -= u[right];
+                    if (s[left] == 0.0f) div += u[left];
+                    if (s[down] == 0.0f) div -= u[down];
+                    if (s[up] == 0.0f) div += u[up];
+
+                    //fluid neighbors
+                    float sx0 = s[left];
+                    float sx1 = s[right];
+                    float sy0 = s[up];
+                    float sy1 = s[down];
+                    float sTot = sx0 + sx1 + sy0 + sy1;
+
+                    // If surrounded by walls, skip
+                    if (sTot == 0.0f) continue;
+
+                    // Calculate how much to adjust velocity to fix the extra fluid
+                    float div = d * overRelaxation; 
+                    
+                    // Distribute the fix among the valid neighbors
+                    u[left] += div * (sx0 / sTot);
+                    u[right] -= div * (sx1 / sTot);
+                    v[up] += div * (sy0 / sTot);
+                    v[down] -= div * (sy1 / sTot);
                 }
             }
         }
